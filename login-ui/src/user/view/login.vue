@@ -58,7 +58,7 @@
         this.$refs[formName].resetFields();
       },
       jumpToUserList(){
-
+        this.$router.push({path:'user/user-list'})
       }
     }
 
