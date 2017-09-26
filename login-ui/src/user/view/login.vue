@@ -1,5 +1,6 @@
 <template>
   <div id="box" @keyup.enter="submitForm()" class="box">
+    <span>登录</span>
     <el-form :model="userForm" label-width="80px" class="demo-userForm" ref="userForm">
       <el-form-item label="用户名：" prop="username">
         <el-input type="text" v-model="userForm.username" auto-complete="off"
@@ -45,7 +46,7 @@
             } else if (data.status === '0000' ) {
               console.log(data);
               this.$message(data.message);
-              this.jumpToUserList();
+              this.jumpToMovieList();
             } else {
               this.$message(data.message);
               console.log(data);
@@ -58,7 +59,10 @@
         this.$refs[formName].resetFields();
       },
       jumpToUserList(){
-        this.$router.push({path:'user/user-list'})
+        this.$router.push({path:'login/userList'})
+      },
+      jumpToMovieList(){
+        this.$router.push({path:'movie/movieList'})
       }
     }
 
@@ -72,6 +76,13 @@
     background-color: #fff;
     border-radius: 5px;
     width:38%;
+    .span {
+      font-size: large;
+      font: 黑体;
+      color: black;
+      padding: 5px;
+      margin-bottom: 5px;
+    }
     .el-form {
       padding: 5px;
       width: 100%;

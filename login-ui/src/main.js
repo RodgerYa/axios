@@ -6,10 +6,12 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import Hello from './components/Hello.vue'
+import Head from './components/Head.vue'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(Hello)
+Vue.use(Head)
 
 /* eslint-disable no-new */
 new Vue({
