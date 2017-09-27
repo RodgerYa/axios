@@ -58,11 +58,8 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      jumpToUserList(){
-        this.$router.push({path:'login/userList'})
-      },
       jumpToMovieList(){
-        this.$router.push({path:'movie/movieList'})
+        this.$router.push({path:'movie/movie-list'})
       }
     }
 

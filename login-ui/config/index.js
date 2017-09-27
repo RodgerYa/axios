@@ -40,7 +40,14 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '^/movie/': '/'
-        }
+        },
+      },
+      '/image': {
+        target: 'http://localhost:10002/image',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/image/': '/'
+        },
       },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

@@ -12,5 +12,8 @@ module.exports = function (http) {
     queryMovieList(){
       return http.get('/movie/getMovieList');
     },
+    queryMovieByID(id){
+      return http.get('/movie/getMovieByID/'+id);
+    }
   }
 }
