@@ -2,8 +2,8 @@
   <div id="box" @keyup.enter="submitForm()" class="box">
     <span>登录</span>
     <el-form :model="userForm" label-width="80px" class="demo-userForm" ref="userForm">
-      <el-form-item label="用户名：" prop="username">
-        <el-input type="text" v-model="userForm.username" auto-complete="off"
+      <el-form-item label="用户名：" prop="userName">
+        <el-input type="text" v-model="userForm.userName" auto-complete="off"
                   placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item label="密码：" prop="password">
@@ -26,7 +26,7 @@
     data: function () {
       return {
         userForm: {
-          username:'',
+          userName:'',
           password:''
         },
         rules: {
@@ -40,15 +40,11 @@
             const {
               data
             } =res;
-            if(data.status === '1000') {
-              Message.error(data.message);
+            if (data.message === 'SUCCESS' ) {
               console.log(data);
-            } else if (data.status === '0000' ) {
-              console.log(data);
-              this.$message(data.message);
               this.jumpToMovieList();
+
             } else {
-              this.$message(data.message);
               console.log(data);
             }
         }).catch(error =>{

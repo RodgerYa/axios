@@ -29,24 +29,24 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/login': {
-        target: 'http://localhost:10001/login',
+        target: 'http://localhost:10002/user/validate',
         changeOrigin: true,
         pathRewrite: {
-          '^/login/': '/'
+          '^/login': '/'
         }
       },
       '/movie': {
-        target: 'http://localhost:10002/movie',
+        target: 'http://localhost:10001/movie',
         changeOrigin: true,
         pathRewrite: {
-          '^/movie/': '/'
+          '^/movie': '/'
         },
       },
       '/image': {
-        target: 'http://localhost:10002/image',
+        target: 'http://localhost:10001/image',
         changeOrigin: true,
         pathRewrite: {
-          '^/image/': '/'
+          '^/image': '/'
         },
       },
     },

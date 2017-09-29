@@ -5,13 +5,16 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
-import Hello from './components/Hello.vue'
-import Head from './components/Head.vue'
+import Header from './components/Header.vue'
+import Footer from './components/Footer.vue'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-Vue.use(Hello)
-Vue.use(Head)
+Vue.use(Header)
+Vue.use(Footer)
+
+Vue.component('y-header',Header)
+Vue.component('y-footer',Footer)
 
 /* eslint-disable no-new */
 new Vue({

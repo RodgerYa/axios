@@ -2,7 +2,7 @@ module.exports = function (http) {
   return {
     //验证用户登录
     validateUserLogin(param){
-      return http.post('/login/validate',param);
+      return http.post('/login',param);
     },
     //查询用户列表
     queryUserList(){
