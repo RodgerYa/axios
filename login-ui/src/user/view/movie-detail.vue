@@ -5,8 +5,11 @@
       <div class="post">
         <img :src="movieInfo.image" @click="dialogVisible = true"/>
         <div style="margin-top:10px;">
-        <button @click="" size="small">观看影片</button>
-        <button @click="" size="small">看过评分</button>
+        <button @click="watchMovie()" size="small">立即观看</button>
+        <button @click="showRate = true" size="small">看过评分</button>
+        <div v-show="showRate" style="margin-top:5px">
+          <el-rate :allow-half="true" v-model="Rate"></el-rate>
+        </div>
         </div>
       </div>
       <div class="info" style="color: #fff">
@@ -33,11 +36,15 @@
         <el-button @click="resetComment()">清空</el-button>
       </div>
       <div class="commentList">
-        <span v-show="movieInfo.commentList == null || movieInfo.commentList.length == 0" style="color:gray">该电影还没有用户评论，占楼的赶紧...</span>
-        <div v-for="(comment,index) in movieInfo.commentList" :key="index"
+        <span v-show="movieComments == null || movieComments.length == 0" style="color:gray">该电影还没有用户评论，占楼的赶紧...</span>
+        <div v-for="(item,index) in movieComments" :key="index"
              style="padding:10px;border-top:solid peachpuff 1px; height: 60px">
-          <span style="color: palevioletred; width: 100%;">{{comment.userName}}:</span><br/>
-          <span style="color: #000;width: 100%;margin-left: 2em;">{{comment.comment}}</span>
+          <span style="color: palevioletred; width: 100%;">{{item.userName}}:</span><br/>
+          <span style="color: #000;width: 100%;margin-left: 2em;">{{item.comment}}</span>
+          <div style="display: inline-block;float:right;" @click="vote(item.id)">
+            <img src="@/../static/vote.png"  style="width:20px; height:20px;" />
+            <span style="float: right;font-size: small"> （{{item.vote}}）</span>
+          </div>
         </div>
       </div>
     </div>
@@ -52,6 +59,7 @@
 
 <script>
   import axios from 'axios';
+  import userApi from '@/user/api'
   const api = require('@/api/index.js')(axios);
   export default {
 
@@ -59,14 +67,19 @@
       return {
         dialogVisible: false,
         movieInfo:[],
+        movieComments: [],
+        textarea:'',
+        showRate: false,
+        hasVoted: false,
+        Rate:null,
         movie:{
           id:'',
           movieName:'',
           price:0,
           releaseTime:'',
           image:''
-        },
-        textarea:''
+        }
+
       }
     },
     methods: {
@@ -79,6 +92,7 @@
           } = res.data;
           if (status === '0000') {
             this.movieInfo = data[0];
+            this.movieComments = data[0].commentList;
             console.log(data);
             this.$message(message);
           } else {
@@ -97,13 +111,52 @@
         }
       },
       submitComment(){
-
+        let user = userApi.getUser();
+        console.log(user);
+        if (user == null) {
+          this.$message('请先登录再发表评论');
+          return null;
+        }
+        else {
+          let comment = this.setComment(user);
+          this.movieComments.push(comment);
+          this.textarea = '';
+          api.addComment(comment).then(res => {
+            const {data,message,status} = res.data;
+            if( status != '0000'){
+              this.$message(message);
+            }
+          }).catch(error => {
+            Message.error(error);
+          });
+        }
+      },
+      setComment(user){
+        let comment = {};
+        comment.userName = user.name;
+        comment.userID = user.id;
+        comment.movieID= this.movieInfo.id;
+        comment.vote = 0;
+        comment.comment = this.textarea;
+        console.log(comment);
+        return comment;
       },
       resetComment(){
-
+        this.textarea = '';
       },
       closeDialog(){
         this.dialogVisible = false;
+      },
+      vote(id){
+        if (this.hasVoted){
+          return;
+        }
+        let comment;
+        for (comment of this.movieComments){
+         if (id === comment.id) {
+           comment.vote++;
+         }
+       }
       }
     },
     mounted(){

@@ -14,6 +14,10 @@ module.exports = function (http) {
     },
     queryMovieByID(id){
       return http.get('/movie/getMovieByID/'+id);
+    },
+    //新增评论
+    addComment(param){
+      return http.post('movie/addComment',param);
     }
   }
 }

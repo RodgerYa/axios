@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
+import Vuex from 'vuex'
 import 'element-ui/lib/theme-default/index.css'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
@@ -12,6 +13,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(Header)
 Vue.use(Footer)
+Vue.use(Vuex)
 
 Vue.component('y-header',Header)
 Vue.component('y-footer',Footer)

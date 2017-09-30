@@ -21,6 +21,8 @@
 <script>
   import axios from 'axios'
   import {Message} from 'element-ui'
+//  import {mapGetters,mapActions} from 'vuex'
+  import userApi from '@/user/api'
   const api = require('@/api/index.js')(axios);
   export default {
     data: function () {
@@ -29,19 +31,30 @@
           userName:'',
           password:''
         },
+        user: {
+          id:'',
+          name:'',
+        },
         rules: {
 
         },
       }
     },
     methods: {
+      setUser(param){
+        this.user.name = param[0].name;
+        this.user.id = param[0].id;
+        userApi.setUser(this.user);
+      }
+      ,
       submitForm() {
         api.validateUserLogin(this.userForm).then(res => {
             const {
               data
-            } =res;
-            if (data.message === 'SUCCESS' ) {
+            } =res.data;
+            if (data != null ) {
               console.log(data);
+              this.setUser(data);
               this.jumpToMovieList();
 
             } else {

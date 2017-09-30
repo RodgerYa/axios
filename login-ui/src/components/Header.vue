@@ -2,15 +2,15 @@
   <div id="box">
     <div id="headMenu" class="headMenu">
       <div id="headButton" class="headButton">
-        <img src="@/../static/logo.jpg" @click=""/>
+        <img src="@/../static/logo.jpg" @click="jumpToMovieList"/>
         <el-button type="text" @click="jumpToMovieList" size="large">首页</el-button>
         <el-button type="text" @click="jumpToMoviePage" size="large">电影</el-button>
         <el-button type="text" @click="jumpToMovieNews" size="large">影讯</el-button>
-    </div>
-    <div class="headSearch">
+      </div>
+    <div class="headSearch" @keyup.enter="query()">
       <el-input placeholder="快速查找电影、影院"
                 icon="search" v-model="searchMessage"
-                @on-icon-click="query()">
+                @click="query()">
       </el-input>
     </div>
     </div>
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+  import {mapGetters,mapActions} from 'vuex'
+  import userApi from '@/user/api'
   export default {
     data() {
       return {
@@ -25,8 +27,9 @@
       }
     },
     methods: {
-      query(value){
-        console.log(value);
+      query(){
+        console.log(this.searchMessage);
+        this.searchMessage = '';
       },
       //电影
       jumpToMoviePage(){
