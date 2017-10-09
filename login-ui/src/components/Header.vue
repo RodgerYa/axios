@@ -8,7 +8,7 @@
         <el-button type="text" @click="jumpToMovieNews" size="large">影讯</el-button>
       </div>
     <div class="headSearch" @keyup.enter="query()">
-      <el-input placeholder="快速查找电影、影院"
+      <el-input placeholder="请输入输入电影名称"
                 icon="search" v-model="searchMessage"
                 @click="query()">
       </el-input>
@@ -20,20 +20,24 @@
 <script>
   import {mapGetters,mapActions} from 'vuex'
   import userApi from '@/user/api'
+  import api from '@/api'
   export default {
     data() {
       return {
-        searchMessage:''
+        searchMessage:'',
+
       }
     },
     methods: {
       query(){
-        console.log(this.searchMessage);
+        if (this.searchMessage != null && this.searchMessage!= ''){
+          this.jumpToMovieDetail(this.searchMessage);
+        }
         this.searchMessage = '';
       },
       //电影
       jumpToMoviePage(){
-
+        this.$router.push({path:'/movie/movie-page'});
       },
       //影讯
       jumpToMovieNews(){
@@ -43,8 +47,9 @@
       jumpToMovieList(){
         this.$router.push({path:'/movie/movie-list'});
       },
-      userIcon(){
-
+      jumpToMovieDetail(param){
+        this.$router.push({path:'/movie/movie-detail', query: {'movieName':param}});
+        window.location.reload();
       }
     },
     mounted(){

@@ -1,59 +1,63 @@
 <template>
-  <div style="display: block">
-    <div class="movieInfo">
-      <h1>{{movieInfo.movieName}}</h1>
-      <div class="post">
-        <img :src="movieInfo.image" @click="dialogVisible = true"/>
-        <div style="margin-top:10px;">
-        <button @click="watchMovie()" size="small">立即观看</button>
-        <button @click="showRate = true" size="small">看过评分</button>
-        <div v-show="showRate" style="margin-top:5px">
-          <el-rate :allow-half="true" v-model="Rate"></el-rate>
+  <div>
+    <span v-show="movieInfo == null || movieInfo.length == 0" style="color: white;margin-top:2em;">
+      未查询到相关影片</span>
+    <div style="display: block" v-show="movieInfo != null && movieInfo.length != 0">
+      <div class="movieInfo">
+        <h1>{{movieInfo.movieName}}</h1>
+        <div class="post">
+          <img :src="movieInfo.image" @click="dialogVisible = true"/>
+          <div style="margin-top:10px;">
+          <button @click="watchMovie()" size="small">立即观看</button>
+          <button @click="showRate = true" size="small">看过评分</button>
+          <div v-show="showRate" style="margin-top:5px">
+            <el-rate :allow-half="true" v-model="Rate"></el-rate>
+          </div>
+          </div>
         </div>
+        <div class="info" style="color: #fff">
+          <span>导演：</span><br/>
+          <span>编剧：</span><br/>
+          <span>主演：</span><br/>
+          <span>上映时间：{{movieInfo.releaseDate}}</span><br/>
+          <span>类型：</span><br/>
+          <span>制片：</span><br/>
+          <span>语言：</span><br/>
+          <span>片长：</span>
         </div>
-      </div>
-      <div class="info" style="color: #fff">
-        <span>导演：</span><br/>
-        <span>编剧：</span><br/>
-        <span>主演：</span><br/>
-        <span>上映时间：{{movieInfo.releaseDate}}</span><br/>
-        <span>类型：</span><br/>
-        <span>制片：</span><br/>
-        <span>语言：</span><br/>
-        <span>片长：</span>
-      </div>
 
-    </div>
-    <div style="background-color: #fff; margin-top:30px; padding:10px; display: inline-block; width:100%">
-      <h3>用户短评</h3>
-      <div class="textarea">
-        <el-input type="textarea" :rows="5"
-                  placeholder="请输入评价..."
-                  v-model="textarea"
-                  :autosize="{minRows:2,maxRows:8}">
-        </el-input>
-        <el-button @click="submitComment()">发表</el-button>
-        <el-button @click="resetComment()">清空</el-button>
       </div>
-      <div class="commentList">
-        <span v-show="movieComments == null || movieComments.length == 0" style="color:gray">该电影还没有用户评论，占楼的赶紧...</span>
-        <div v-for="(item,index) in movieComments" :key="index"
-             style="padding:10px;border-top:solid peachpuff 1px; height: 60px">
-          <span style="color: palevioletred; width: 100%;">{{item.userName}}:</span><br/>
-          <span style="color: #000;width: 100%;margin-left: 2em;">{{item.comment}}</span>
-          <div style="display: inline-block;float:right;" @click="vote(item.id)">
-            <img src="@/../static/vote.png"  style="width:20px; height:20px;" />
-            <span style="float: right;font-size: small"> （{{item.vote}}）</span>
+      <div style="background-color: #fff; margin-top:30px; padding:10px; display: inline-block; width:100%">
+        <h3>用户短评</h3>
+        <div class="textarea">
+          <el-input type="textarea" :rows="5"
+                    placeholder="请输入评价..."
+                    v-model="textarea"
+                    :autosize="{minRows:2,maxRows:8}">
+          </el-input>
+          <el-button @click="submitComment()">发表</el-button>
+          <el-button @click="resetComment()">清空</el-button>
+        </div>
+        <div class="commentList">
+          <span v-show="movieComments == null || movieComments.length == 0" style="color:gray">该电影还没有用户评论，占楼的赶紧...</span>
+          <div v-for="(item,index) in movieComments" :key="index"
+               style="padding:10px;border-top:solid peachpuff 1px; height: 60px">
+            <span style="color: palevioletred; width: 100%;">{{item.userName}}:</span><br/>
+            <span style="color: #000;width: 100%;margin-left: 2em;">{{item.comment}}</span>
+            <div style="display: inline-block;float:right;" @click="vote(item.id)">
+              <img src="@/../static/vote.png"  style="width:20px; height:20px;" />
+              <span style="float: right;font-size: small"> （{{item.vote}}）</span>
+            </div>
           </div>
         </div>
       </div>
+      <div class="dialog">
+        <el-dialog :visible="this.dialogVisible" :modal="false" :show-close="false">
+          <img :src=this.movieInfo.image @click="closeDialog()"/>
+        </el-dialog>
+      </div>
+      <y-footer></y-footer>
     </div>
-    <div class="dialog">
-      <el-dialog :visible="this.dialogVisible" :modal="false" :show-close="false">
-        <img :src=this.movieInfo.image @click="closeDialog()"/>
-      </el-dialog>
-    </div>
-    <y-footer></y-footer>
   </div>
 </template>
 
@@ -103,13 +107,32 @@
           error => {
             this.$message(error+' GG');
           }
-        )
+        );
       },
-      getMovieInfo(){
-        if (this.movieInfo.length >0 ){
+      searchMovie(param){
+        api.queryMovie(param).then(res => {
+          const {
+            data,
+            status,
+            message
+          } = res.data;
+          if (status === '0000') {
+            this.movieInfo = data[0];
+            if (data != null)
+              this.movieComments = data[0].commentList;
+            console.log(data);
+            this.$message(message);
+          } else {
+            console.log(data);
+            console.log("WRONG");
+          }
+        }).catch(
+          error => {
+            this.$message(error+' GG');
+          }
+        );
+      },
 
-        }
-      },
       submitComment(){
         let user = userApi.getUser();
         console.log(user);
@@ -157,13 +180,22 @@
            comment.vote++;
          }
        }
+      },
+      watchMovie(){
+
       }
     },
     mounted(){
       let query = this.$route.query;
-      if (query && query.id >0) {
-        this.movie.id = query.id;
-        this.query(query.id);
+      if (query) {
+        if (query.id != null && query.id != ''){
+          this.movie.id = query.id;
+          this.query(query.id);
+        }
+        else if (query.movieName != null && query.movieName != '') {
+          this.movie.movieName = query.movieName;
+          this.searchMovie(this.movie);
+        }
       }
     }
   }

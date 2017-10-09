@@ -12,6 +12,9 @@ module.exports = function (http) {
     queryMovieList(){
       return http.get('/movie/getMovieList');
     },
+    queryMovie(param){
+      return http.post('/movie/getMovieByExample',param)
+    },
     queryMovieByID(id){
       return http.get('/movie/getMovieByID/'+id);
     },

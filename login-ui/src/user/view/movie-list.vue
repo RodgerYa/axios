@@ -70,6 +70,29 @@
           this.$message(error+'  GG');
         });
       },
+      SearchMovie(param){
+        let queryData = {};
+        queryData.movieName = param;
+        api.queryMovie(queryData).then(res => {
+          const {
+            data,
+            status,
+            message
+          } =res.data;
+          if (status === '0000') {
+            this.page.movieList=data;
+            this.$message(message)
+            console.log(this.page.movieList);
+//            this.initCarouselList(this.page.movieList);
+          } else {
+            this.$message(message);
+            console.log(data);
+            console.log('XXXX');
+          }
+        }).catch(error => {
+          this.$message(error+'  GG');
+        });
+      },
       initCarouselList(param) {
         let data = param;
         data.sort((a,b) => {
@@ -84,10 +107,10 @@
       //电影详细
       jumpToMovieDetail(id){
         this.$router.push({path:'/movie/movie-detail',query:{'id':id}});
-      }
+      },
     },
     mounted(){
-      this.query();
+        this.query();
 //      this.initCarouselList(this.page.movieList);
     }
   }
